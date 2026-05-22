@@ -25,7 +25,7 @@ app.add_middleware(
 MASTER_JSON = "master_data.json"
 LOG_PATH = "eco_logs.json"
 
-API_KEY = os.environ.get("GEMINI_API_KEY", "AIzaSyCyPbmrWIPHi54SEZT6mm8lp-UwfiwANgQ")
+API_KEY = os.environ.get("GEMINI_API_KEY", "AIzaSyBaQSEC_FhOyAfj8LhdH9iOyjpFpqfctjA")
 client = genai.Client(api_key=API_KEY)
 MODEL_NAME = 'gemini-2.5-flash'
 
