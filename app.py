@@ -47,17 +47,24 @@ def load_db(path):
         return {}
     with open(safe_path, "r", encoding="utf-8") as f:
         try:
-            return json.load(f)
+            data = json.load(f)
+            if "master" in path and "items" not in data:
+                return {"items": {"canteen": [], "nescafe": []}}
+            return data
         except json.JSONDecodeError:
             return {"items": {"canteen": [], "nescafe": []}} if "master" in path else {}
 
 def save_db(path, data):
     safe_path = get_safe_path(path)
     with open(safe_path, "w", encoding="utf-8") as f:
-        json.dump(data, f, indent=4)
+        json.dump(data, f, indent=4, ensure_ascii=False)
 
 def calculate_metrics(item, qty=1.0):
-    q = float(qty)
+    try:
+        q = float(qty)
+    except (ValueError, TypeError):
+        q = 1.0
+        
     eff = float(item.get('efficiency', 80)) / 100.0
     carbon_val = float(item.get('carbon', 0)) * q
     price_val = float(item.get('price', 0)) * q
@@ -97,6 +104,11 @@ async def analyze(
     file: UploadFile = File(None)
 ):
     master = load_db(MASTER_JSON)
+    if 'items' not in master:
+        master = {"items": {"canteen": [], "nescafe": []}}
+    if source not in master['items']:
+        master['items'][source] = []
+        
     source_items = master['items'].get(source, [])
     results = []
     db_needs_update = False
@@ -131,11 +143,25 @@ async def analyze(
                         master['items'][source].append(new_entry)
                         m = new_entry
                         db_needs_update = True                  
+                    
                     results.append(calculate_metrics(m, f.get('qty', 1)))
         else:
-            m = next((x for x in source_items if x['name'] == name), None)
+            m = next((x for x in source_items if x['name'].lower() == name.lower()), None)
             if m:
                 results.append(calculate_metrics(m, qty))
+            else:
+                # Fallback item if manually typed but not yet in database
+                fallback_entry = {
+                    "name": name,
+                    "carbon": 0.2,
+                    "price": 0.0,
+                    "efficiency": 80,
+                    "swap": "Pending manual update",
+                    "impact": "Manually logged item"
+                }
+                master['items'][source].append(fallback_entry)
+                db_needs_update = True
+                results.append(calculate_metrics(fallback_entry, qty))
 
         if db_needs_update:
             save_db(MASTER_JSON, master)
@@ -144,6 +170,8 @@ async def analyze(
             logs = load_db(LOG_PATH)
             if date not in logs:
                 logs[date] = {"canteen": [], "nescafe": []}
+            if source not in logs[date]:
+                logs[date][source] = []
             
             for r in results:
                 r.update({"source": source, "time": datetime.now().strftime("%H:%M")})
@@ -189,6 +217,9 @@ class NewItem(BaseModel):
 async def add_to_master(item: NewItem):
     try:
         master = load_db(MASTER_JSON)
+        if 'items' not in master:
+            master = {"items": {"canteen": [], "nescafe": []}}
+            
         entry = {
             "name": item.name,
             "carbon": item.carbon,
@@ -199,6 +230,8 @@ async def add_to_master(item: NewItem):
         }
         
         if item.source in master['items']:
+            # Prevent duplicating identical names
+            master['items'][item.source] = [x for x in master['items'][item.source] if x['name'].lower() != item.name.lower()]
             master['items'][item.source].append(entry)
             save_db(MASTER_JSON, master)
             return {"status": "success", "message": f"Added {item.name}"}
