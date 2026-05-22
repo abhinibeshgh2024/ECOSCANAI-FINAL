@@ -5,14 +5,14 @@ import re
 from datetime import datetime
 from fastapi import FastAPI, UploadFile, File, Form
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import HTMLFileResponse
+from fastapi.responses import HTMLResponse, FileResponse
 from pydantic import BaseModel
 from google import genai
 from google.genai import types
 
 app = FastAPI()
 
-# Enable CORS for local testing stability
+# Enable CORS for testing stability
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -75,9 +75,9 @@ def calculate_metrics(item, qty=1.0):
     }
 
 # --- Serve UI Frontend at Base URL ---
-@app.get("/", response_class=HTMLFileResponse)
+@app.get("/", response_class=FileResponse)
 async def serve_frontend():
-    return "index.html"
+    return FileResponse("index.html")
 
 # --- API Endpoints ---
 @app.get("/api/master")
@@ -209,4 +209,4 @@ async def add_to_master(item: NewItem):
 if __name__ == "__main__":
     import uvicorn
     port_env = int(os.environ.get("PORT", 8000))
-    uvicorn.run("app:app", host="0.0.0.0", port=port_env, reload=True)
+    uvicorn.run("app:app", host="0.0.0.0", port=port_env, reload=False)
