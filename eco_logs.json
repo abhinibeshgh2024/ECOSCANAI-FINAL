@@ -1,0 +1,580 @@
+{
+    "2026-05-06": {
+        "canteen": [
+            {
+                "id": "f5ff6b9d",
+                "name": "Curd Rice",
+                "carbon": 0.3,
+                "price": 0.0,
+                "energy_kwh": 0.36,
+                "bulb_hours": 30.6,
+                "swap": "Use Millet Rice intead of regular ones",
+                "impact": "",
+                "source": "canteen",
+                "time": "15:32"
+            },
+            {
+                "id": "7eb485e1",
+                "name": "Veg Thali",
+                "carbon": 1.2,
+                "price": 120.0,
+                "energy_kwh": 2.06,
+                "bulb_hours": 174.9,
+                "swap": "Seasonal Organic Thali",
+                "impact": "Zero chemical runoff impact",
+                "source": "canteen",
+                "time": "18:34"
+            },
+            {
+                "id": "69380dc6",
+                "name": "JhalMuri",
+                "carbon": 0.0,
+                "price": 0.0,
+                "energy_kwh": 0,
+                "bulb_hours": 0,
+                "swap": "No Swap",
+                "impact": "",
+                "source": "canteen",
+                "time": "18:34"
+            },
+            {
+                "id": "c7956669",
+                "name": "Veg Thali",
+                "carbon": 1.2,
+                "price": 120.0,
+                "energy_kwh": 2.06,
+                "bulb_hours": 174.9,
+                "swap": "Seasonal Organic Thali",
+                "impact": "Zero chemical runoff impact",
+                "source": "canteen",
+                "time": "18:35"
+            },
+            {
+                "id": "79946646",
+                "name": "Idli Sambar",
+                "carbon": 0.4,
+                "price": 40.0,
+                "energy_kwh": 0.56,
+                "bulb_hours": 48.0,
+                "swap": "Ragi Idli",
+                "impact": "Millets require 70% less water than rice",
+                "source": "canteen",
+                "time": "18:35"
+            }
+        ],
+        "nescafe": [
+            {
+                "id": "7847b519",
+                "name": "Cappuccino",
+                "carbon": 0.5,
+                "price": 70.0,
+                "energy_kwh": 0.75,
+                "bulb_hours": 63.7,
+                "swap": "Oat Milk Cappuccino",
+                "impact": "Lowest water-use plant milk",
+                "source": "nescafe",
+                "time": "18:34"
+            },
+            {
+                "id": "0656b94d",
+                "name": "Cappuccino",
+                "carbon": 0.5,
+                "price": 70.0,
+                "energy_kwh": 0.75,
+                "bulb_hours": 63.7,
+                "swap": "Oat Milk Cappuccino",
+                "impact": "Lowest water-use plant milk",
+                "source": "nescafe",
+                "time": "18:34"
+            },
+            {
+                "id": "79c76b64",
+                "name": "Cappuccino",
+                "carbon": 0.5,
+                "price": 70.0,
+                "energy_kwh": 0.75,
+                "bulb_hours": 63.7,
+                "swap": "Oat Milk Cappuccino",
+                "impact": "Lowest water-use plant milk",
+                "source": "nescafe",
+                "time": "18:34"
+            }
+        ]
+    },
+    "2026-05-01": {
+        "canteen": [
+            {
+                "id": "aceaeb70",
+                "name": "Chole Bhature",
+                "carbon": 0.9,
+                "price": 80.0,
+                "energy_kwh": 1.54,
+                "bulb_hours": 131.1,
+                "swap": "Chole Kulcha (Non-fried)",
+                "impact": "Reduces oil consumption and processing energy",
+                "source": "canteen",
+                "time": "20:05"
+            }
+        ],
+        "nescafe": []
+    },
+    "2026-05-14": {
+        "canteen": [
+            {
+                "id": "04c128c9",
+                "name": "Veg Thali",
+                "carbon": 1.2,
+                "price": 120.0,
+                "energy_kwh": 2.06,
+                "bulb_hours": 174.9,
+                "swap": "Seasonal Organic Thali",
+                "impact": "Zero chemical runoff impact",
+                "source": "canteen",
+                "time": "20:05"
+            },
+            {
+                "id": "33459835",
+                "name": "Fish Burger",
+                "carbon": 0.0,
+                "price": 0.0,
+                "energy_kwh": 0,
+                "bulb_hours": 0,
+                "swap": "Pending manual update",
+                "impact": "New item detected via OCR",
+                "source": "canteen",
+                "time": "20:06"
+            },
+            {
+                "id": "7cdae434",
+                "name": "Fish & Chips",
+                "carbon": 0.0,
+                "price": 0.0,
+                "energy_kwh": 0,
+                "bulb_hours": 0,
+                "swap": "Pending manual update",
+                "impact": "New item detected via OCR",
+                "source": "canteen",
+                "time": "20:06"
+            },
+            {
+                "id": "1be6d3e4",
+                "name": "Soft Drink",
+                "carbon": 0.0,
+                "price": 0.0,
+                "energy_kwh": 0,
+                "bulb_hours": 0,
+                "swap": "Pending manual update",
+                "impact": "New item detected via OCR",
+                "source": "canteen",
+                "time": "20:06"
+            }
+        ],
+        "nescafe": [
+            {
+                "id": "5975f472",
+                "name": "Hot Chocolate",
+                "carbon": 0.5,
+                "price": 60.0,
+                "energy_kwh": 0.71,
+                "bulb_hours": 60.0,
+                "swap": "Fair-trade Dark Cocoa",
+                "impact": "Ensures sustainable farming wages",
+                "source": "nescafe",
+                "time": "20:06"
+            },
+            {
+                "id": "adbf7213",
+                "name": "Maggi",
+                "carbon": 0.6,
+                "price": 40.0,
+                "energy_kwh": 0.8,
+                "bulb_hours": 68.0,
+                "swap": "Whole Wheat Vegetable Maggi",
+                "impact": "Higher fiber, lower processing energy",
+                "source": "nescafe",
+                "time": "20:10"
+            }
+        ]
+    },
+    "2026-05-15": {
+        "canteen": [
+            {
+                "id": "b0db4aac",
+                "name": "Samosa",
+                "carbon": 0.3,
+                "price": 15.0,
+                "energy_kwh": 0.45,
+                "bulb_hours": 38.2,
+                "swap": "Air-fried Baked Samosa",
+                "impact": "Saves 15g of reused oil waste per unit",
+                "source": "canteen",
+                "time": "16:08"
+            },
+            {
+                "id": "c985748d",
+                "name": "Idli Sambar",
+                "carbon": 0.4,
+                "price": 40.0,
+                "energy_kwh": 0.56,
+                "bulb_hours": 48.0,
+                "swap": "Ragi Idli",
+                "impact": "Millets require 70% less water than rice",
+                "source": "canteen",
+                "time": "16:08"
+            },
+            {
+                "id": "7480c769",
+                "name": "Chicken Biryani",
+                "carbon": 2.8,
+                "price": 180.0,
+                "energy_kwh": 5.6,
+                "bulb_hours": 476.0,
+                "swap": "Jackfruit (Kathal) Biryani",
+                "impact": "Significant reduction in livestock carbon",
+                "source": "canteen",
+                "time": "16:08"
+            },
+            {
+                "id": "9f3b55bd",
+                "name": "Paneer Butter Masala",
+                "carbon": 1.5,
+                "price": 150.0,
+                "energy_kwh": 2.77,
+                "bulb_hours": 235.4,
+                "swap": "Tofu Makhani",
+                "impact": "70% lower methane emission vs dairy",
+                "source": "canteen",
+                "time": "16:08"
+            },
+            {
+                "id": "acd76b02",
+                "name": "Puri Sabji",
+                "carbon": 0.7,
+                "price": 50.0,
+                "energy_kwh": 1.2,
+                "bulb_hours": 102.0,
+                "swap": "Baked Puri",
+                "impact": "Cuts oil waste and VOC emissions",
+                "source": "canteen",
+                "time": "16:08"
+            },
+            {
+                "id": "9dd183a9",
+                "name": "Masala Dosa",
+                "carbon": 0.8,
+                "price": 60.0,
+                "energy_kwh": 1.28,
+                "bulb_hours": 108.8,
+                "swap": "Oat-based batter Dosa",
+                "impact": "Reduces water footprint of rice by 40%",
+                "source": "canteen",
+                "time": "16:09"
+            }
+        ],
+        "nescafe": []
+    },
+    "2026-05-20": {
+        "canteen": [
+            {
+                "id": "32adb323",
+                "name": "Masala Dosa",
+                "carbon": 0.8,
+                "price": 60.0,
+                "energy_kwh": 1.28,
+                "bulb_hours": 108.8,
+                "swap": "Oat-based batter Dosa",
+                "impact": "Reduces water footprint of rice by 40%",
+                "source": "canteen",
+                "time": "08:49"
+            },
+            {
+                "id": "8091a61d",
+                "name": "Fish Burger",
+                "carbon": 0.0,
+                "price": 0.0,
+                "energy_kwh": 0,
+                "bulb_hours": 0,
+                "swap": "Pending manual update",
+                "impact": "New item detected via OCR",
+                "source": "canteen",
+                "time": "08:49"
+            },
+            {
+                "id": "28afe6eb",
+                "name": "Fish & Chips",
+                "carbon": 0.0,
+                "price": 0.0,
+                "energy_kwh": 0,
+                "bulb_hours": 0,
+                "swap": "Pending manual update",
+                "impact": "New item detected via OCR",
+                "source": "canteen",
+                "time": "08:49"
+            },
+            {
+                "id": "71cfabda",
+                "name": "Soft Drink",
+                "carbon": 0.0,
+                "price": 0.0,
+                "energy_kwh": 0,
+                "bulb_hours": 0,
+                "swap": "Pending manual update",
+                "impact": "New item detected via OCR",
+                "source": "canteen",
+                "time": "08:49"
+            },
+            {
+                "id": "04179910",
+                "name": "Fish Burger",
+                "carbon": 0.0,
+                "price": 0.0,
+                "energy_kwh": 0,
+                "bulb_hours": 0,
+                "swap": "Pending manual update",
+                "impact": "New item detected via OCR",
+                "source": "canteen",
+                "time": "08:50"
+            },
+            {
+                "id": "7509d5c6",
+                "name": "Fish & Chips",
+                "carbon": 0.0,
+                "price": 0.0,
+                "energy_kwh": 0,
+                "bulb_hours": 0,
+                "swap": "Pending manual update",
+                "impact": "New item detected via OCR",
+                "source": "canteen",
+                "time": "08:50"
+            },
+            {
+                "id": "48203cb3",
+                "name": "Soft Drink",
+                "carbon": 0.0,
+                "price": 0.0,
+                "energy_kwh": 0,
+                "bulb_hours": 0,
+                "swap": "Pending manual update",
+                "impact": "New item detected via OCR",
+                "source": "canteen",
+                "time": "08:50"
+            },
+            {
+                "id": "fbdd36ad",
+                "name": "Chicken Biryani",
+                "carbon": 2.8,
+                "price": 180.0,
+                "energy_kwh": 5.6,
+                "bulb_hours": 476.0,
+                "swap": "Jackfruit (Kathal) Biryani",
+                "impact": "Significant reduction in livestock carbon",
+                "source": "canteen",
+                "time": "08:53"
+            }
+        ],
+        "nescafe": [
+            {
+                "id": "c0e3f89a",
+                "name": "Maggi",
+                "carbon": 0.6,
+                "price": 40.0,
+                "energy_kwh": 0.8,
+                "bulb_hours": 68.0,
+                "swap": "Whole Wheat Vegetable Maggi",
+                "impact": "Higher fiber, lower processing energy",
+                "source": "nescafe",
+                "time": "08:53"
+            },
+            {
+                "id": "b8c4165b",
+                "name": "Fish Burger",
+                "carbon": 0.0,
+                "price": 0.0,
+                "energy_kwh": 0,
+                "bulb_hours": 0,
+                "swap": "Pending manual update",
+                "impact": "New item detected via OCR",
+                "source": "nescafe",
+                "time": "08:53"
+            },
+            {
+                "id": "9588917d",
+                "name": "Fish & Chips",
+                "carbon": 0.0,
+                "price": 0.0,
+                "energy_kwh": 0,
+                "bulb_hours": 0,
+                "swap": "Pending manual update",
+                "impact": "New item detected via OCR",
+                "source": "nescafe",
+                "time": "08:53"
+            },
+            {
+                "id": "117fb1a2",
+                "name": "Soft Drink",
+                "carbon": 0.0,
+                "price": 0.0,
+                "energy_kwh": 0,
+                "bulb_hours": 0,
+                "swap": "Pending manual update",
+                "impact": "New item detected via OCR",
+                "source": "nescafe",
+                "time": "08:53"
+            }
+        ]
+    },
+    "2026-05-21": {
+        "canteen": [
+            {
+                "id": "c6e953e3",
+                "name": "Veg Thali",
+                "carbon": 1.2,
+                "price": 120.0,
+                "energy_kwh": 2.06,
+                "bulb_hours": 174.9,
+                "swap": "Seasonal Organic Thali",
+                "impact": "Zero chemical runoff impact",
+                "source": "canteen",
+                "time": "12:31"
+            },
+            {
+                "id": "4d588457",
+                "name": "Chicken Biryani",
+                "carbon": 2.8,
+                "price": 180.0,
+                "energy_kwh": 5.6,
+                "bulb_hours": 476.0,
+                "swap": "Jackfruit (Kathal) Biryani",
+                "impact": "Significant reduction in livestock carbon",
+                "source": "canteen",
+                "time": "12:31"
+            },
+            {
+                "id": "fc1f1f8c",
+                "name": "Aloo Paratha",
+                "carbon": 0.5,
+                "price": 40.0,
+                "energy_kwh": 0.8,
+                "bulb_hours": 68.0,
+                "swap": "Mixed Grain Paratha",
+                "impact": "Better soil health via crop diversity",
+                "source": "canteen",
+                "time": "12:31"
+            }
+        ],
+        "nescafe": []
+    },
+    "2026-05-22": {
+        "canteen": [
+            {
+                "id": "f66d86f2",
+                "name": "Veg Thali",
+                "carbon": 1.2,
+                "price": 120.0,
+                "energy_kwh": 2.06,
+                "bulb_hours": 174.9,
+                "swap": "Seasonal Organic Thali",
+                "impact": "Zero chemical runoff impact",
+                "source": "canteen",
+                "time": "20:03"
+            },
+            {
+                "id": "5f1d7c14",
+                "name": "Fish Burger",
+                "carbon": 0.0,
+                "price": 0.0,
+                "energy_kwh": 0,
+                "bulb_hours": 0,
+                "swap": "Pending manual update",
+                "impact": "New item detected via OCR",
+                "source": "canteen",
+                "time": "20:03"
+            },
+            {
+                "id": "0d3eb500",
+                "name": "Fish & Chips",
+                "carbon": 0.0,
+                "price": 0.0,
+                "energy_kwh": 0,
+                "bulb_hours": 0,
+                "swap": "Pending manual update",
+                "impact": "New item detected via OCR",
+                "source": "canteen",
+                "time": "20:03"
+            },
+            {
+                "id": "6bbfb5ac",
+                "name": "Soft Drink",
+                "carbon": 0.0,
+                "price": 0.0,
+                "energy_kwh": 0,
+                "bulb_hours": 0,
+                "swap": "Pending manual update",
+                "impact": "New item detected via OCR",
+                "source": "canteen",
+                "time": "20:03"
+            },
+            {
+                "id": "0852e3ec",
+                "name": "Dhuska",
+                "carbon": 0.5,
+                "price": 30.0,
+                "energy_kwh": 0.71,
+                "bulb_hours": 60.0,
+                "swap": "Steamed Dhuska",
+                "impact": "Reduces heated oil emissions",
+                "source": "canteen",
+                "time": "20:08"
+            },
+            {
+                "id": "67eaeced",
+                "name": "Dhuska",
+                "carbon": 0.5,
+                "price": 30.0,
+                "energy_kwh": 0.71,
+                "bulb_hours": 60.0,
+                "swap": "Steamed Dhuska",
+                "impact": "Reduces heated oil emissions",
+                "source": "canteen",
+                "time": "20:08"
+            },
+            {
+                "id": "5d13ca4b",
+                "name": "Fish Burger",
+                "carbon": 0.0,
+                "price": 0.0,
+                "energy_kwh": 0,
+                "bulb_hours": 0,
+                "swap": "Pending manual update",
+                "impact": "New item detected via OCR",
+                "source": "canteen",
+                "time": "20:08"
+            },
+            {
+                "id": "fb8b9151",
+                "name": "Fish & Chips",
+                "carbon": 0.0,
+                "price": 0.0,
+                "energy_kwh": 0,
+                "bulb_hours": 0,
+                "swap": "Pending manual update",
+                "impact": "New item detected via OCR",
+                "source": "canteen",
+                "time": "20:08"
+            },
+            {
+                "id": "ce2b3a72",
+                "name": "Soft Drink",
+                "carbon": 0.0,
+                "price": 0.0,
+                "energy_kwh": 0,
+                "bulb_hours": 0,
+                "swap": "Pending manual update",
+                "impact": "New item detected via OCR",
+                "source": "canteen",
+                "time": "20:08"
+            }
+        ],
+        "nescafe": []
+    }
+}

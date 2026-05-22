@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Eco-Scan AI | Database Manager</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root { --p: #6366f1; --bg: #0f172a; --card: rgba(30, 41, 59, 0.7); --border: rgba(255, 255, 255, 0.1); }
+        body { 
+            margin: 0; font-family: 'Outfit', sans-serif; 
+            background: radial-gradient(circle at top left, #1e1b4b, #0f172a); 
+            color: white; display: flex; justify-content: center; align-items: center; min-height: 100vh;
+        }
+        .admin-card { 
+            background: var(--card); backdrop-filter: blur(12px); 
+            padding: 40px; border-radius: 24px; border: 1px solid var(--border);
+            width: 100%; max-width: 500px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+        }
+        h2 { margin-top: 0; color: var(--p); display: flex; justify-content: space-between; }
+        label { display: block; margin-bottom: 5px; font-size: 0.85rem; color: #94a3b8; text-transform: uppercase; }
+        input, select, textarea { 
+            width: 100%; padding: 12px; background: rgba(15, 23, 42, 0.5); 
+            border: 1px solid var(--border); border-radius: 10px; 
+            margin-bottom: 20px; color: white; outline: none; box-sizing: border-box;
+        }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        button { 
+            width: 100%; padding: 15px; border: none; border-radius: 12px; 
+            background: var(--p); color: white; font-weight: 600; cursor: pointer; transition: 0.3s;
+        }
+        button:hover { transform: translateY(-2px); box-shadow: 0 10px 15px rgba(99, 102, 241, 0.3); }
+        .back-link { display: block; text-align: center; margin-top: 20px; color: #94a3b8; text-decoration: none; font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+
+    <div class="admin-card">
+        <h2>Add Master Item <span style="font-size: 1.2rem;">🛠️</span></h2>
+        
+        <label>Category</label>
+        <select id="source">
+            <option value="canteen">Canteen</option>
+            <option value="nescafe">Nescafe</option>
+        </select>
+
+        <label>Item Name</label>
+        <input type="text" id="name" placeholder="e.g. Paneer Tikka">
+
+        <div class="grid">
+            <div>
+                <label>Carbon (kg)</label>
+                <input type="number" id="carbon" step="0.1" placeholder="0.8">
+            </div>
+            <div>
+                <label>Price (₹)</label>
+                <input type="number" id="price" placeholder="120">
+            </div>
+        </div>
+
+        <label>Kitchen Efficiency (%)</label>
+        <input type="number" id="efficiency" value="80">
+
+        <label>Sustainable Swap</label>
+        <input type="text" id="swap" placeholder="e.g. Soya Chaap Tikka">
+
+        <label>Environmental Impact</label>
+        <textarea id="impact" rows="2" placeholder="Reduces methane emissions by 50%..."></textarea>
+
+        <button onclick="saveItem()">Add to Master Database</button>
+        
+        <a href="index.html" class="back-link">← Return to Dashboard</a>
+    </div>
+
+    <script>
+        async function saveItem() {
+            const item = {
+                source: document.getElementById('source').value,
+                name: document.getElementById('name').value,
+                carbon: parseFloat(document.getElementById('carbon').value),
+                price: parseFloat(document.getElementById('price').value),
+                efficiency: parseInt(document.getElementById('efficiency').value),
+                swap: document.getElementById('swap').value,
+                impact: document.getElementById('impact').value
+            };
+
+            if(!item.name || isNaN(item.carbon)) return alert("Please fill at least name and carbon value.");
+
+            try {
+                const res = await fetch('http://localhost:8000/api/add-master', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(item)
+                });
+                const data = await res.json();
+                
+                if(data.status === "success") {
+                    alert("✅ Item added successfully!");
+                    // Clear form
+                    document.getElementById('name').value = "";
+                    document.getElementById('carbon').value = "";
+                    document.getElementById('price').value = "";
+                    document.getElementById('swap').value = "";
+                    document.getElementById('impact').value = "";
+                } else {
+                    alert("❌ Error: " + data.message);
+                }
+            } catch (e) {
+                alert("Server connection failed. Make sure Python app is running.");
+            }
+        }
+    </script>
+</body>
+</html>

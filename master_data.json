@@ -1,0 +1,512 @@
+{
+    "items": {
+        "canteen": [
+            {
+                "name": "Masala Dosa",
+                "carbon": 0.8,
+                "price": 60,
+                "efficiency": 75,
+                "swap": "Oat-based batter Dosa",
+                "impact": "Reduces water footprint of rice by 40%"
+            },
+            {
+                "name": "Samosa",
+                "carbon": 0.3,
+                "price": 15,
+                "efficiency": 80,
+                "swap": "Air-fried Baked Samosa",
+                "impact": "Saves 15g of reused oil waste per unit"
+            },
+            {
+                "name": "Veg Thali",
+                "carbon": 1.2,
+                "price": 120,
+                "efficiency": 70,
+                "swap": "Seasonal Organic Thali",
+                "impact": "Zero chemical runoff impact"
+            },
+            {
+                "name": "Paneer Butter Masala",
+                "carbon": 1.5,
+                "price": 150,
+                "efficiency": 65,
+                "swap": "Tofu Makhani",
+                "impact": "70% lower methane emission vs dairy"
+            },
+            {
+                "name": "Chicken Biryani",
+                "carbon": 2.8,
+                "price": 180,
+                "efficiency": 60,
+                "swap": "Jackfruit (Kathal) Biryani",
+                "impact": "Significant reduction in livestock carbon"
+            },
+            {
+                "name": "Chole Bhature",
+                "carbon": 0.9,
+                "price": 80,
+                "efficiency": 70,
+                "swap": "Chole Kulcha (Non-fried)",
+                "impact": "Reduces oil consumption and processing energy"
+            },
+            {
+                "name": "Idli Sambar",
+                "carbon": 0.4,
+                "price": 40,
+                "efficiency": 85,
+                "swap": "Ragi Idli",
+                "impact": "Millets require 70% less water than rice"
+            },
+            {
+                "name": "Veg Momos",
+                "carbon": 0.5,
+                "price": 60,
+                "efficiency": 90,
+                "swap": "Open-faced Wheat Momos",
+                "impact": "Less refined flour, lower processing heat"
+            },
+            {
+                "name": "Litti Chokha",
+                "carbon": 0.6,
+                "price": 50,
+                "efficiency": 85,
+                "swap": "Desi Ghee alternative",
+                "impact": "Local sattu is a low-energy protein source"
+            },
+            {
+                "name": "Dal Makhani",
+                "carbon": 1.1,
+                "price": 100,
+                "efficiency": 65,
+                "swap": "Yellow Dal Tadka",
+                "impact": "Eliminating heavy cream reduces carbon by 30%"
+            },
+            {
+                "name": "Aloo Paratha",
+                "carbon": 0.5,
+                "price": 40,
+                "efficiency": 75,
+                "swap": "Mixed Grain Paratha",
+                "impact": "Better soil health via crop diversity"
+            },
+            {
+                "name": "Veg Chowmein",
+                "carbon": 0.7,
+                "price": 70,
+                "efficiency": 80,
+                "swap": "Buckwheat Noodles",
+                "impact": "Lower carbon footprint than refined wheat"
+            },
+            {
+                "name": "Pav Bhaji",
+                "carbon": 0.9,
+                "price": 90,
+                "efficiency": 70,
+                "swap": "Whole Wheat Pav",
+                "impact": "Lower industrial processing energy"
+            },
+            {
+                "name": "Egg Curry",
+                "carbon": 1.2,
+                "price": 110,
+                "efficiency": 75,
+                "swap": "Chickpea Curry",
+                "impact": "Plant proteins are 10x more efficient"
+            },
+            {
+                "name": "Dhuska",
+                "carbon": 0.5,
+                "price": 30,
+                "efficiency": 85,
+                "swap": "Steamed Dhuska",
+                "impact": "Reduces heated oil emissions"
+            },
+            {
+                "name": "Fried Rice",
+                "carbon": 0.8,
+                "price": 80,
+                "efficiency": 75,
+                "swap": "Brown Fried Rice",
+                "impact": "Less hulling/processing energy"
+            },
+            {
+                "name": "Puri Sabji",
+                "carbon": 0.7,
+                "price": 50,
+                "efficiency": 70,
+                "swap": "Baked Puri",
+                "impact": "Cuts oil waste and VOC emissions"
+            },
+            {
+                "name": "Gobi Manchurian",
+                "carbon": 0.6,
+                "price": 90,
+                "efficiency": 75,
+                "swap": "Roasted Gobi bites",
+                "impact": "Saves energy on deep frying"
+            },
+            {
+                "name": "Pulao",
+                "carbon": 0.7,
+                "price": 100,
+                "efficiency": 80,
+                "swap": "Millets Pulao",
+                "impact": "Saves significant irrigation water"
+            },
+            {
+                "name": "Kadhai Paneer",
+                "carbon": 1.4,
+                "price": 160,
+                "efficiency": 65,
+                "swap": "Mushroom Masala",
+                "impact": "Fungi have very low agricultural footprint"
+            },
+            {
+                "name": "Bread Omlette",
+                "carbon": 0.8,
+                "price": 45,
+                "efficiency": 80,
+                "swap": "Besan Chilla",
+                "impact": "Pulse-based protein is zero-cholesterol/low-CO2"
+            },
+            {
+                "name": "Spring Rolls",
+                "carbon": 0.5,
+                "price": 60,
+                "efficiency": 75,
+                "swap": "Fresh Rice Paper Rolls",
+                "impact": "No-cook options save kitchen energy"
+            },
+            {
+                "name": "Upma",
+                "carbon": 0.3,
+                "price": 30,
+                "efficiency": 90,
+                "swap": "Oats Upma",
+                "impact": "Reduced glycemic index and water use"
+            },
+            {
+                "name": "Vada Pav",
+                "carbon": 0.4,
+                "price": 20,
+                "efficiency": 80,
+                "swap": "Baked Vada Pav",
+                "impact": "Lower lipid footprint"
+            },
+            {
+                "name": "Fish Fry",
+                "carbon": 2.1,
+                "price": 140,
+                "efficiency": 60,
+                "swap": "Grilled Local Fish",
+                "impact": "Supports local pond ecology vs industrial"
+            },
+            {
+                "name": "Americano",
+                "carbon": 1.3,
+                "price": 47,
+                "efficiency": 80,
+                "swap": "Reusable coffe cup/metal straws",
+                "impact": "New item detected via OCR"
+            },
+            {
+                "name": "Almond Scone",
+                "carbon": 0.9,
+                "price": 0.0,
+                "efficiency": 80,
+                "swap": "Pending manual update",
+                "impact": "New item detected via OCR"
+            },
+            {
+                "name": "16oz Bottle Water",
+                "carbon": 0.2,
+                "price": 0.0,
+                "efficiency": 80,
+                "swap": "Pending manual update",
+                "impact": "New item detected via OCR"
+            },
+            {
+                "name": "Payasam",
+                "carbon": 0.6,
+                "price": 100.0,
+                "efficiency": 85,
+                "swap": "No effective swap needed",
+                "impact": ""
+            },
+            {
+                "name": "JhalMuri",
+                "carbon": 0.0,
+                "price": 0.0,
+                "efficiency": 100,
+                "swap": "No Swap",
+                "impact": ""
+            },
+            {
+                "name": "Curd Rice",
+                "carbon": 0.3,
+                "price": 0.0,
+                "efficiency": 100,
+                "swap": "Use Millet Rice intead of regular ones",
+                "impact": ""
+            },
+            {
+                "name": "Fish Burger",
+                "carbon": 0.0,
+                "price": 0.0,
+                "efficiency": 80,
+                "swap": "Pending manual update",
+                "impact": "New item detected via OCR"
+            },
+            {
+                "name": "Fish & Chips",
+                "carbon": 0.0,
+                "price": 0.0,
+                "efficiency": 80,
+                "swap": "Pending manual update",
+                "impact": "New item detected via OCR"
+            },
+            {
+                "name": "Soft Drink",
+                "carbon": 0.0,
+                "price": 0.0,
+                "efficiency": 80,
+                "swap": "Pending manual update",
+                "impact": "New item detected via OCR"
+            }
+        ],
+        "nescafe": [
+            {
+                "name": "Cold Coffee",
+                "carbon": 0.4,
+                "price": 45,
+                "efficiency": 85,
+                "swap": "Almond Milk Cold Coffee",
+                "impact": "60% lower methane emission vs dairy"
+            },
+            {
+                "name": "Maggi",
+                "carbon": 0.6,
+                "price": 40,
+                "efficiency": 90,
+                "swap": "Whole Wheat Vegetable Maggi",
+                "impact": "Higher fiber, lower processing energy"
+            },
+            {
+                "name": "Hot Chocolate",
+                "carbon": 0.5,
+                "price": 60,
+                "efficiency": 85,
+                "swap": "Fair-trade Dark Cocoa",
+                "impact": "Ensures sustainable farming wages"
+            },
+            {
+                "name": "Masala Chai",
+                "carbon": 0.2,
+                "price": 15,
+                "efficiency": 95,
+                "swap": "Jaggery (Gur) Tea",
+                "impact": "Eliminates refined sugar processing carbon"
+            },
+            {
+                "name": "Espresso",
+                "carbon": 0.1,
+                "price": 50,
+                "efficiency": 95,
+                "swap": "Organic Bean Espresso",
+                "impact": "Zero synthetic pesticide footprint"
+            },
+            {
+                "name": "Cappuccino",
+                "carbon": 0.5,
+                "price": 70,
+                "efficiency": 80,
+                "swap": "Oat Milk Cappuccino",
+                "impact": "Lowest water-use plant milk"
+            },
+            {
+                "name": "Iced Tea",
+                "carbon": 0.2,
+                "price": 40,
+                "efficiency": 90,
+                "swap": "Homemade Lemonade",
+                "impact": "Zero plastic packaging/transport carbon"
+            },
+            {
+                "name": "Paneer Patties",
+                "carbon": 0.7,
+                "price": 25,
+                "efficiency": 75,
+                "swap": "Veg Puff",
+                "impact": "Reduces dairy-related emissions"
+            },
+            {
+                "name": "Chocolate Muffin",
+                "carbon": 0.6,
+                "price": 50,
+                "efficiency": 80,
+                "swap": "Banana Oat Muffin",
+                "impact": "Natural binders reduce egg/dairy use"
+            },
+            {
+                "name": "White Sauce Pasta",
+                "carbon": 1.2,
+                "price": 110,
+                "efficiency": 70,
+                "swap": "Arrabiata (Red) Pasta",
+                "impact": "Tomato base is 50% lower carbon than cream"
+            },
+            {
+                "name": "Garlic Bread",
+                "carbon": 0.4,
+                "price": 60,
+                "efficiency": 80,
+                "swap": "Herbed Multigrain Toast",
+                "impact": "Lower refined carb footprint"
+            },
+            {
+                "name": "Green Tea",
+                "carbon": 0.1,
+                "price": 25,
+                "efficiency": 95,
+                "swap": "Loose Leaf Green Tea",
+                "impact": "Saves teabag microplastic and waste"
+            },
+            {
+                "name": "Cafe Latte",
+                "carbon": 0.6,
+                "price": 80,
+                "efficiency": 75,
+                "swap": "Soy Latte",
+                "impact": "High protein, lower CO2 alternative"
+            },
+            {
+                "name": "Veg Sandwich",
+                "carbon": 0.4,
+                "price": 50,
+                "efficiency": 85,
+                "swap": "Open Beetroot Toast",
+                "impact": "Reduced bread processing, local veg"
+            },
+            {
+                "name": "Brownie",
+                "carbon": 0.7,
+                "price": 70,
+                "efficiency": 75,
+                "swap": "Walnut Energy Ball",
+                "impact": "No-bake, zero dairy dessert"
+            },
+            {
+                "name": "Black Coffee",
+                "carbon": 0.1,
+                "price": 30,
+                "efficiency": 95,
+                "swap": "Shade-grown Coffee",
+                "impact": "Protects bird habitats and soil"
+            },
+            {
+                "name": "Lemon Tea",
+                "carbon": 0.1,
+                "price": 20,
+                "efficiency": 95,
+                "swap": "Fresh Ginger Lemon",
+                "impact": "Locally sourced root ingredients"
+            },
+            {
+                "name": "Veg Burger",
+                "carbon": 1.0,
+                "price": 80,
+                "efficiency": 70,
+                "swap": "Beet & Bean Burger",
+                "impact": "Higher nutrient density, lower processing"
+            },
+            {
+                "name": "French Fries",
+                "carbon": 0.5,
+                "price": 70,
+                "efficiency": 75,
+                "swap": "Sweet Potato Wedges",
+                "impact": "Lower glycemic and agricultural input"
+            },
+            {
+                "name": "KitKat Shake",
+                "carbon": 1.3,
+                "price": 95,
+                "efficiency": 65,
+                "swap": "Dark Cocoa Shake",
+                "impact": "Less palm oil and refined sugar"
+            },
+            {
+                "name": "Blueberry Muffin",
+                "carbon": 1000.5,
+                "price": 55,
+                "efficiency": 80,
+                "swap": "Seasonal Fruit Tart",
+                "impact": "Uses local fruit vs imported berries"
+            },
+            {
+                "name": "Cold Drink (Can)",
+                "carbon": 0.4,
+                "price": 35,
+                "efficiency": 90,
+                "swap": "Fresh Lime Soda",
+                "impact": "Removes aluminum smelting carbon"
+            },
+            {
+                "name": "Choco Lava Cake",
+                "carbon": 0.9,
+                "price": 80,
+                "efficiency": 65,
+                "swap": "Fruit Custard",
+                "impact": "Lower butter and baking energy"
+            },
+            {
+                "name": "Nachos",
+                "carbon": 0.5,
+                "price": 85,
+                "efficiency": 80,
+                "swap": "Roasted Corn",
+                "impact": "Zero factory processing energy"
+            },
+            {
+                "name": "Cheese Corn Sandwich",
+                "carbon": 0.9,
+                "price": 75,
+                "efficiency": 75,
+                "swap": "Corn & Spinach Sandwich",
+                "impact": "Greens reduce the total cheese volume required"
+            },
+            {
+                "name": "Fish Burger",
+                "carbon": 0.0,
+                "price": 0.0,
+                "efficiency": 80,
+                "swap": "Pending manual update",
+                "impact": "New item detected via OCR"
+            },
+            {
+                "name": "Fish & Chips",
+                "carbon": 0.0,
+                "price": 0.0,
+                "efficiency": 80,
+                "swap": "Pending manual update",
+                "impact": "New item detected via OCR"
+            },
+            {
+                "name": "Soft Drink",
+                "carbon": 0.0,
+                "price": 0.0,
+                "efficiency": 80,
+                "swap": "Pending manual update",
+                "impact": "New item detected via OCR"
+            },
+            {
+                "name": "American Waffles",
+                "carbon": 1.2,
+                "price": 0.0,
+                "efficiency": 100,
+                "swap": "White waffle",
+                "impact": ""
+            }
+        ]
+    }
+}

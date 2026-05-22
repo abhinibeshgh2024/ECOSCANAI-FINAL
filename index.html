@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eco-Scan AI | Master Console</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root { 
+            --p: #6366f1; --c: #f59e0b; --n: #ef4444; --s: #22c55e;
+            --bg: #0f172a; --card: rgba(30, 41, 59, 0.7); 
+            --border: rgba(255, 255, 255, 0.1);
+        }
+
+        body { 
+            margin: 0; font-family: 'Outfit', sans-serif; 
+            background: radial-gradient(circle at top right, #1e1b4b, #0f172a); 
+            color: white; display: flex; height: 100vh; overflow: hidden; 
+        }
+        
+        .sidebar { 
+            width: 260px; background: rgba(15, 23, 42, 0.8); 
+            backdrop-filter: blur(10px); border-right: 1px solid var(--border);
+            padding: 30px; display: flex; flex-direction: column; 
+        }
+        .nav { 
+            padding: 14px; border-radius: 12px; cursor: pointer; 
+            margin-bottom: 10px; transition: 0.3s; color: #94a3b8; font-weight: 500;
+        }
+        .nav:hover { background: rgba(255,255,255,0.05); color: white; }
+        .nav.active { background: var(--p); color: white; box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.3); }
+
+        .main { flex-grow: 1; overflow-y: auto; padding: 40px; scroll-behavior: smooth; }
+        
+        .card { 
+            background: var(--card); backdrop-filter: blur(12px); 
+            border-radius: 24px; padding: 25px; border: 1px solid var(--border); 
+            margin-bottom: 30px;
+        }
+        
+        .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 30px; }
+        .stat-card { 
+            background: var(--card); padding: 20px; border-radius: 20px; 
+            text-align: center; border: 1px solid var(--border);
+        }
+        .stat-card h2 { margin: 10px 0 0; color: white; font-size: 1.8rem; }
+
+        .split { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+        
+        .log-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        .log-table th { text-align: left; padding: 12px; color: #94a3b8; border-bottom: 1px solid var(--border); font-size: 0.8rem; text-transform: uppercase; }
+        .log-table td { padding: 12px; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
+        
+        .swap-badge {
+            background: rgba(34, 197, 94, 0.2); color: #4ade80;
+            padding: 4px 8px; border-radius: 6px; font-size: 0.75rem;
+            cursor: help; border: 1px solid rgba(34, 197, 94, 0.3);
+        }
+
+        input, textarea, select { 
+            width: 100%; padding: 12px; background: rgba(15, 23, 42, 0.5); 
+            border: 1px solid var(--border); border-radius: 10px; 
+            margin-bottom: 15px; color: white; font-family: inherit; outline: none;
+        }
+        
+        button { width: 100%; padding: 12px; border: none; border-radius: 10px; font-weight: 600; cursor: pointer; transition: 0.3s; color: white; }
+        .btn-p { background: var(--p); }
+        .btn-p:hover { opacity: 0.9; transform: translateY(-2px); }
+        
+        .search-container { position: relative; }
+        .suggest-box { 
+            position: absolute; top: 100%; left: 0; width: 100%; 
+            background: #1e293b; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); 
+            display: none; z-index: 100; border: 1px solid var(--border); max-height: 200px; overflow-y: auto; 
+        }
+        .suggest-item { padding: 12px; cursor: pointer; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; }
+        .suggest-item:hover { background: var(--p); }
+
+        #toast { position: fixed; bottom: 20px; right: 20px; background: var(--p); color: white; padding: 15px 25px; border-radius: 12px; display: none; z-index: 1000; }
+    </style>
+</head>
+<body>
+
+    <div id="toast">🚀 Processing Data...</div>
+
+    <aside class="sidebar">
+        <h2 style="margin-bottom:40px;"><span style="color: var(--p)">🌍</span> Eco-Scan</h2>
+        <div class="nav active" id="nav-dash" onclick="show('dash')">📊 Dashboard</div>
+        <div class="nav" id="nav-policy" onclick="show('policy')">🧠 Policy Lab</div>
+        <div class="nav" id="nav-admin" onclick="show('admin')">🛠️ Master Manager</div>
+        
+        <div style="margin-top:auto; padding-top: 20px; border-top: 1px solid var(--border)">
+            <label style="font-size: 0.7rem; color: #94a3b8;">SELECT DATE</label>
+            <input type="date" id="target-date" onchange="sync()">
+        </div>
+    </aside>
+
+    <main class="main">
+        <!-- DASHBOARD -->
+        <div id="view-dash">
+            <div class="grid-4">
+                <div class="stat-card"><small>CO2 IMPACT</small><h2 id="m-co2">0.0</h2></div>
+                <div class="stat-card"><small>ENERGY (kWh)</small><h2 id="m-kwh">0.0</h2></div>
+                <div class="stat-card"><small>BULB HOURS</small><h2 id="m-bulb">0.0</h2></div>
+                <div class="stat-card"><small>TREES</small><h2 id="m-tree">0.0</h2></div>
+            </div>
+
+            <div class="split">
+                <div class="card">
+                    <h3>Manual Entry / Scan</h3>
+                    <select id="active-src">
+                        <option value="canteen">Canteen Hub</option>
+                        <option value="nescafe">Nescafe Lounge</option>
+                    </select>
+                    <div class="search-container">
+                        <input type="text" id="s-input" placeholder="Search item..." oninput="suggest()">
+                        <div id="suggest-box" class="suggest-box"></div>
+                    </div>
+                    <button class="btn-p" onclick="logItem()">Log Selection</button>
+                    <input type="file" id="f-input" style="margin-top: 15px;">
+                    <button style="background:#334155" onclick="logItem(true)">📸 Scan Receipt</button>
+                </div>
+
+                <div class="card">
+                    <h3>Live Feed & Swaps</h3>
+                    <div style="max-height: 300px; overflow-y: auto;">
+                        <table class="log-table">
+                            <thead><tr><th>Item</th><th>CO2</th><th>Smart Swap</th></tr></thead>
+                            <tbody id="log-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3>Emission Trends</h3>
+                <div style="height:200px"><canvas id="chart"></canvas></div>
+            </div>
+        </div>
+
+        <!-- POLICY LAB -->
+        <div id="view-policy" style="display:none">
+            <div class="card">
+                <h2>AI Policy Simulator</h2>
+                <textarea id="policy-input" rows="4" placeholder="Ask about sustainability changes..."></textarea>
+                <button class="btn-p" onclick="runPolicy()">Simulate Impact</button>
+                <div id="policy-res" class="card" style="margin-top:20px; display:none; background: rgba(99, 102, 241, 0.1);"></div>
+            </div>
+        </div>
+
+        <!-- MASTER MANAGER -->
+        <div id="view-admin" style="display:none">
+            <div class="card" style="max-width: 500px; margin: 0 auto;">
+                <h2>Master Database</h2>
+                <select id="adm-source">
+                    <option value="canteen">Canteen</option>
+                    <option value="nescafe">Nescafe</option>
+                </select>
+                <input type="text" id="adm-name" placeholder="Item Name">
+                <input type="number" id="adm-carbon" step="0.1" placeholder="Carbon (kg)">
+                <input type="text" id="adm-swap" placeholder="Better Swap (e.g. Oat Milk)">
+                <textarea id="adm-impact" placeholder="Swap Benefit..."></textarea>
+                <button class="btn-p" onclick="saveMaster()">Save to JSON</button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Use relative routing context instead of a broken hardcoded Railway link
+        const API = window.location.origin;
+        let masterData = { items: { canteen: [], nescafe: [] } };
+        let myChart = null;
+
+        async function init() {
+            document.getElementById('target-date').valueAsDate = new Date();
+            try {
+                const res = await fetch(`${API}/api/master`);
+                masterData = await res.json();
+            } catch(e) {
+                console.error("Master catalog load skipped or empty.");
+            }
+            sync();
+        }
+
+        function suggest() {
+            const src = document.getElementById('active-src').value;
+            const q = document.getElementById('s-input').value.toLowerCase();
+            const box = document.getElementById('suggest-box');
+            box.innerHTML = "";
+            if(!q || !masterData.items[src]) { box.style.display = 'none'; return; }
+            const hits = masterData.items[src].filter(i => i.name.toLowerCase().includes(q));
+            hits.forEach(h => {
+                const div = document.createElement('div');
+                div.className = 'suggest-item';
+                div.innerHTML = `<span>${h.name}</span> <small>${h.carbon}kg</small>`;
+                div.onclick = () => { document.getElementById('s-input').value = h.name; box.style.display = 'none'; };
+                box.appendChild(div);
+            });
+            box.style.display = hits.length ? 'block' : 'none';
+        }
+
+        async function logItem(isOCR = false) {
+            const fd = new FormData();
+            const src = document.getElementById('active-src').value;
+            fd.append('date', document.getElementById('target-date').value);
+            fd.append('source', src);
+            if(isOCR) {
+                const file = document.getElementById('f-input').files[0];
+                if(!file) return alert("Please select a file first");
+                fd.append('file', file);
+            } else {
+                const nameVal = document.getElementById('s-input').value;
+                if(!nameVal) return alert("Please type or select an item name");
+                fd.append('name', nameVal);
+                fd.append('qty', "1");
+            }
+            msg(true);
+            await fetch(`${API}/api/analyze`, { method: 'POST', body: fd });
+            msg(false);
+            
+            // Reload master list updates
+            const res = await fetch(`${API}/api/master`);
+            masterData = await res.json();
+            sync();
+        }
+
+        async function sync() {
+            const res = await fetch(`${API}/api/db`);
+            const db = await res.json();
+            const date = document.getElementById('target-date').value;
+            const data = db[date] || { canteen: [], nescafe: [] };
+            
+            let totalC=0, canC=0, nesC=0;
+            const logBody = document.getElementById('log-body');
+            logBody.innerHTML = "";
+
+            const allEntries = [...(data.canteen||[]), ...(data.nescafe||[])];
+            
+            allEntries.forEach(i => {
+                totalC += i.carbon;
+                if(i.source === 'canteen') canC += i.carbon; else nesC += i.carbon;
+
+                const masterInfo = masterData.items[i.source] ? masterData.items[i.source].find(m => m.name === i.name) : null;
+                const swapHtml = (masterInfo && masterInfo.swap && masterInfo.swap !== "Pending manual update") 
+                    ? `<span class="swap-badge" title="${masterInfo.impact}">💡 Try ${masterInfo.swap}</span>` 
+                    : '--';
+
+                logBody.innerHTML += `<tr>
+                    <td>${i.name}</td>
+                    <td>${i.carbon.toFixed(2)}</td>
+                    <td>${swapHtml}</td>
+                </tr>`;
+            });
+
+            document.getElementById('m-co2').innerText = totalC.toFixed(2);
+            document.getElementById('m-kwh').innerText = (totalC * 2.5).toFixed(1);
+            document.getElementById('m-bulb').innerText = (totalC * 12).toFixed(0);
+            document.getElementById('m-tree').innerText = (totalC/0.06).toFixed(1);
+            updateChart(canC, nesC);
+        }
+
+        function updateChart(c1, c2) {
+            const canvasEl = document.getElementById('chart');
+            if(!canvasEl) return;
+            const ctx = canvasEl.getContext('2d');
+            if(myChart) myChart.destroy();
+            myChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Canteen', 'Nescafe'],
+                    datasets: [{ data: [c1, c2], backgroundColor: ['#f59e0b', '#ef4444'] }]
+                },
+                options: { maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { ticks: { color: 'white' } } } }
+            });
+        }
+
+        async function saveMaster() {
+            const item = {
+                source: document.getElementById('adm-source').value,
+                name: document.getElementById('adm-name').value,
+                carbon: parseFloat(document.getElementById('adm-carbon').value) || 0,
+                price: 0, efficiency: 100,
+                swap: document.getElementById('adm-swap').value || "None",
+                impact: document.getElementById('adm-impact').value || "None"
+            };
+            await fetch(`${API}/api/add-master`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(item)
+            });
+            alert("Database Updated");
+            init();
+        }
+
+        async function runPolicy() {
+            const scenario = document.getElementById('policy-input').value;
+            msg(true);
+            const res = await fetch(`${API}/api/simulate`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ scenario, stats: document.getElementById('m-co2').innerText })
+            });
+            const data = await res.json();
+            msg(false);
+            const div = document.getElementById('policy-res');
+            div.innerText = data.prediction;
+            div.style.display = 'block';
+        }
+
+        function show(v) {
+            ['dash', 'policy', 'admin'].forEach(id => document.getElementById(`view-${id}`).style.display = 'none');
+            document.getElementById(`view-${v}`).style.display = 'block';
+            document.querySelectorAll('.nav').forEach(n => n.classList.remove('active'));
+            document.getElementById(`nav-${v}`).classList.add('active');
+        }
+
+        function msg(s) { document.getElementById('toast').style.display = s?'block':'none'; }
+        init();
+    </script>
+</body>
+</html>

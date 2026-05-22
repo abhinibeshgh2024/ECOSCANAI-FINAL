@@ -1,0 +1,328 @@
+html,cc.js
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Eco-Scan AI | Sustainable University Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root { --accent: #10b981; --nescafe: #f59e0b; --bg: #020617; --card: rgba(255,255,255,0.04); }
+        body { margin: 0; font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: white; display: flex; height: 100vh; overflow: hidden; }
+        
+        /* Sidebar Glass */
+        .sidebar { width: 300px; background: rgba(15, 23, 42, 0.9); border-right: 1px solid rgba(255,255,255,0.1); padding: 30px; display: flex; flex-direction: column; backdrop-filter: blur(20px); }
+        .content { flex: 1; padding: 40px; overflow-y: auto; background: radial-gradient(circle at top right, #0f172a, #020617); }
+
+        /* Glassmorphism Classes */
+        .glass-panel { background: var(--card); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 25px; margin-bottom: 25px; backdrop-filter: blur(10px); }
+        .nav-btn { padding: 14px; margin: 5px 0; border-radius: 12px; cursor: pointer; transition: 0.3s; color: #94a3b8; border: none; background: none; text-align: left; width: 100%; font-size: 1rem; }
+        .nav-btn.active { background: var(--accent); color: #020617; font-weight: bold; }
+
+        /* Stats Grid */
+        .stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 25px; }
+        .stat-card { background: var(--card); border: 1px solid rgba(255,255,255,0.1); padding: 20px; border-radius: 15px; text-align: center; }
+        .stat-card h4 { margin: 0; color: #94a3b8; font-size: 0.8rem; }
+        .stat-card p { margin: 10px 0 0; font-size: 1.6rem; font-weight: 800; color: var(--accent); }
+
+        /* Inputs */
+        input, select { background: #0f172a; border: 1px solid #334155; color: white; padding: 12px; border-radius: 8px; width: 100%; margin-bottom: 15px; }
+        .btn { padding: 12px; border-radius: 8px; border: none; font-weight: 800; cursor: pointer; transition: 0.3s; width: 100%; }
+        .btn-canteen { background: var(--accent); color: black; }
+        .btn-nescafe { background: var(--nescafe); color: white; }
+
+        /* Feed Styling */
+        .item-card { border-left: 4px solid var(--accent); background: rgba(255,255,255,0.02); padding: 15px; border-radius: 12px; margin-bottom: 10px; animation: slideUp 0.3s ease; }
+        .nescafe-border { border-left-color: var(--nescafe) !important; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; } }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <h2 style="color: var(--accent); letter-spacing: -1px;">ECO-SCAN AI</h2>
+        <p style="font-size: 0.8rem; color: #64748b; margin-top: -15px; margin-bottom: 30px;">University Sustainability Master</p>
+        
+        <label style="font-size: 0.7rem; color: var(--accent);">SELECT DATE TO VIEW/LOG</label>
+        <input type="date" id="target-date" onchange="syncUI()">
+
+        <div style="margin-top: 20px;">
+            <button class="nav-btn active" id="btn-entry" onclick="nav('entry')">📥 Dual Entry Feed</button>
+            <button class="nav-btn" id="btn-stats" onclick="nav('stats')">📊 Cumulative Analytics</button>
+            <button class="nav-btn" id="btn-history" onclick="nav('history')">📜 Historical Archive</button>
+        </div>
+
+        <button class="btn" style="margin-top: auto; background: #ef4444;" onclick="resetSystem()">Wipe Database</button>
+    </div>
+
+    <div class="content">
+        <div id="page-entry">
+            <h1 style="font-weight: 800;">Log Emissions</h1>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <div class="glass-panel">
+                    <h3 style="color:var(--accent)">Main Canteen (Manual)</h3>
+                    <input type="text" id="m-name" placeholder="Item (e.g., Pasta Bowl)">
+                    <input type="text" id="m-qty" placeholder="Quantity (e.g., 50 servings)">
+                    <button class="btn btn-canteen" onclick="process('canteen')">Analyze Item</button>
+                </div>
+                <div class="glass-panel">
+                    <h3 style="color:var(--nescafe)">Nescafe Outlet (OCR)</h3>
+                    <input type="file" id="n-file">
+                    <button class="btn btn-nescafe" onclick="process('nescafe')">Process Receipt</button>
+                </div>
+            </div>
+            <h3>Today's Processing Stream</h3>
+            <div id="live-feed"></div>
+        </div>
+
+        <div id="page-stats" style="display:none;">
+            <h1 style="font-weight: 800;">Cumulative Performance</h1>
+            <div class="stat-grid">
+                <div class="stat-card"><h4>Daily CO2</h4><p id="s-daily">0.0</p></div>
+                <div class="stat-card"><h4>Weekly Total</h4><p id="s-weekly">0.0</p></div>
+                <div class="stat-card"><h4>Annual Footprint</h4><p id="s-yearly">0.0</p></div>
+                <div class="stat-card"><h4>Saved Efficiency</h4><p id="s-eff">0%</p></div>
+            </div>
+            <div class="glass-panel" style="height: 400px;">
+                <canvas id="compChart"></canvas>
+            </div>
+        </div>
+
+        <div id="page-history" style="display:none;">
+            <h1 style="font-weight: 800;">Data Archive</h1>
+            <div id="history-container"></div>
+        </div>
+    </div>
+
+    <script>
+        const API = "http://localhost:8000/api";
+        let masterDB = {};
+        let chart = null;
+
+        // Init
+        document.getElementById('target-date').valueAsDate = new Date();
+        syncUI();
+
+        async function syncUI() {
+            const res = await fetch(`${API}/db`);
+            masterDB = await res.json();
+            renderLiveFeed();
+            updateCumulativeStats();
+            renderHistory();
+        }
+
+        function nav(page) {
+            document.querySelectorAll('[id^="page-"]').forEach(p => p.style.display = 'none');
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('page-' + page).style.display = 'block';
+            document.getElementById('btn-' + page).classList.add('active');
+            if(page === 'stats') renderChart();
+        }
+
+        async function process(source) {
+            const date = document.getElementById('target-date').value;
+            const fd = new FormData();
+            fd.append('date', date); fd.append('source', source);
+
+            if(source === 'canteen') {
+                fd.append('name', document.getElementById('m-name').value);
+                fd.append('qty', document.getElementById('m-qty').value);
+            } else {
+                const file = document.getElementById('n-file').files[0];
+                if(!file) return alert("Select receipt");
+                fd.append('file', file);
+            }
+
+            const res = await fetch(`${API}/analyze`, { method: 'POST', body: fd });
+            if(res.ok) {
+                alert("AI Analysis Complete!");
+                syncUI();
+            }
+        }
+
+        function renderLiveFeed() {
+            const date = document.getElementById('target-date').value;
+            const feed = document.getElementById('live-feed');
+            feed.innerHTML = "";
+            
+            if(masterDB[date]) {
+                [...masterDB[date].canteen, ...masterDB[date].nescafe].reverse().forEach(item => {
+                    feed.innerHTML += `
+                        <div class="item-card ${item.source === 'nescafe' ? 'nescafe-border' : ''}">
+                            <div style="display:flex; justify-content:space-between;">
+                                <strong>${item.name} (${item.source.toUpperCase()})</strong>
+                                <span style="color:var(--accent)">${item.carbon} kg CO2e</span>
+                            </div>
+                            <div style="font-size:0.85rem; margin-top:8px; color:#94a3b8;">
+                                🌿 <b>Swap:</b> ${item.solution} | 📦 <b>Pkg:</b> ${item.pkg} | 📈 <b>Score:</b> ${item.efficiency}%
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+        }
+
+        function renderHistory() {
+            const container = document.getElementById('history-container');
+            container.innerHTML = "";
+            Object.keys(masterDB).sort().reverse().forEach(date => {
+                const day = masterDB[date];
+                const total = [...day.canteen, ...day.nescafe].reduce((sum, i) => sum + i.carbon, 0);
+                container.innerHTML += `
+                    <div class="glass-panel">
+                        <div style="display:flex; justify-content:space-between; border-bottom:1px solid #334155; padding-bottom:10px; margin-bottom:10px;">
+                            <h3 style="margin:0">${date}</h3>
+                            <b style="color:var(--accent)">Total: ${total.toFixed(2)} kg</b>
+                        </div>
+                        <p>Items: ${day.canteen.length} Canteen | ${day.nescafe.length} Nescafe</p>
+                        <button class="nav-btn" style="background:rgba(255,255,255,0.05)" onclick="jumpToDate('${date}')">View Details</button>
+                    </div>
+                `;
+            });
+        }
+
+        function jumpToDate(date) {
+            document.getElementById('target-date').value = date;
+            nav('entry');
+            syncUI();
+        }
+
+        function updateCumulativeStats() {
+            const today = document.getElementById('target-date').value;
+            let dTotal = 0, wTotal = 0, yTotal = 0, sTotal = 0, cTotal = 0;
+            const now = new Date();
+
+            Object.keys(masterDB).forEach(date => {
+                const d = new Date(date);
+                const items = [...masterDB[date].canteen, ...masterDB[date].nescafe];
+                const dayCarbon = items.reduce((sum, i) => sum + i.carbon, 0);
+                const daySaved = items.reduce((sum, i) => sum + i.saving, 0);
+
+                if(date === today) dTotal += dayCarbon;
+                if(now - d < 7 * 24 * 3600000) wTotal += dayCarbon;
+                if(d.getFullYear() === now.getFullYear()) yTotal += dayCarbon;
+                sTotal += daySaved;
+                cTotal += dayCarbon;
+            });
+
+            document.getElementById('s-daily').innerText = dTotal.toFixed(1);
+            document.getElementById('s-weekly').innerText = wTotal.toFixed(1);
+            document.getElementById('s-yearly').innerText = yTotal.toFixed(1);
+            document.getElementById('s-eff').innerText = ((sTotal / (cTotal + 1)) * 100).toFixed(0) + "%";
+        }
+
+        function renderChart() {
+            let cant = 0, nesc = 0;
+            Object.values(masterDB).forEach(day => {
+                day.canteen.forEach(i => cant += i.carbon);
+                day.nescafe.forEach(i => nesc += i.carbon);
+            });
+
+            const ctx = document.getElementById('compChart').getContext('2d');
+            if(chart) chart.destroy();
+            chart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Main Canteen', 'Nescafe Outlet'],
+                    datasets: [{
+                        label: 'Total Emission (kg CO2e)',
+                        data: [cant, nesc],
+                        backgroundColor: ['#10b981', '#f59e0b'],
+                        borderRadius: 8
+                    }]
+                },
+                options: { 
+                    responsive: true, maintainAspectRatio: false,
+                    plugins: { legend: { labels: { color: 'white' } } },
+                    scales: { y: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(255,255,255,0.05)' } } }
+                }
+            });
+        }
+
+        async function resetSystem() {
+            if(confirm("Delete ALL historical data?")) {
+                await fetch(`${API}/clear`, { method: 'DELETE' });
+                syncUI();
+            }
+        }
+    </script>
+</body>
+</html>
+
+py code
+
+import json, os, re, uuid
+from datetime import datetime, timedelta
+from fastapi import FastAPI, UploadFile, File, Form, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
+import google.generativeai as genai
+
+app = FastAPI()
+app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
+
+# CONFIGURATION
+DB_PATH = "university_sustainability_master.json"
+# IMPORTANT: Replace with your actual Gemini API Key
+genai.configure(api_key="AIzaSyDAEZW9pT9w6WNrGW7VbOPdhajhIdRyIkQ")
+model = genai.GenerativeModel('gemini-3.1-flash-lite-preview')
+
+def get_db():
+    if not os.path.exists(DB_PATH): return {}
+    with open(DB_PATH, "r") as f: return json.load(f)
+
+def save_db(data):
+    with open(DB_PATH, "w") as f: json.dump(data, f, indent=4)
+
+@app.post("/api/analyze")
+async def analyze_and_save(
+    date: str = Form(...), 
+    source: str = Form(...), 
+    name: str = Form(None), 
+    qty: str = Form(None), 
+    file: UploadFile = File(None)
+):
+    # Strict System Instruction for AI
+    prompt = f"""Analyze the environmental impact of {source} items. 
+    Return ONLY a JSON list of objects with these keys: 
+    "name", "carbon" (kg CO2, float), "solution" (specific sustainable swap), 
+    "pkg" (packaging type), "saving" (potential kg CO2 saved with swap, float), 
+    "efficiency" (sustainability score 1-100, int)."""
+
+    try:
+        if file:
+            img_bytes = await file.read()
+            response = model.generate_content([f"{prompt} Source: {source} receipt.", {"mime_type": "image/jpeg", "data": img_bytes}])
+        else:
+            response = model.generate_content(f"{prompt} Item: {qty} of {name}.")
+
+        # Robust JSON extraction
+        clean_text = re.sub(r'```json|```', '', response.text).strip()
+        items = json.loads(clean_text)
+        if isinstance(items, dict): items = [items]
+
+        db = get_db()
+        if date not in db: db[date] = {"canteen": [], "nescafe": []}
+        
+        processed_items = []
+        for item in items:
+            item.update({
+                "id": str(uuid.uuid4())[:8],
+                "timestamp": datetime.now().strftime("%H:%M:%S"),
+                "source": source
+            })
+            db[date][source].append(item)
+            processed_items.append(item)
+        
+        save_db(db)
+        return processed_items
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"AI Analysis Failed: {str(e)}")
+
+@app.get("/api/db")
+async def fetch_full_db():
+    return get_db()
+
+@app.delete("/api/clear")
+async def reset_db():
+    save_db({})
+    return {"status": "Database Wiped"}

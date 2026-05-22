@@ -1,0 +1,334 @@
+htmlcss js\\\\
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Eco-Scan AI | Sustainable University Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root { --accent: #10b981; --nescafe: #f59e0b; --bg: #020617; --card: rgba(255,255,255,0.04); --primary: #8b5cf6; }
+        body { margin: 0; font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: white; display: flex; height: 100vh; overflow: hidden; }
+        
+        /* Layout */
+        .sidebar { width: 320px; background: rgba(15, 23, 42, 0.95); border-right: 1px solid rgba(255,255,255,0.1); padding: 30px; display: flex; flex-direction: column; backdrop-filter: blur(20px); z-index: 100; }
+        .content { flex: 1; padding: 40px; overflow-y: auto; background: radial-gradient(circle at top right, #0f172a, #020617); position: relative; }
+
+        /* Global Loader */
+        #loader { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(2, 6, 23, 0.85); backdrop-filter: blur(8px); z-index: 9999; flex-direction: column; justify-content: center; align-items: center; }
+        .spinner { width: 60px; height: 60px; border: 4px solid var(--card); border-top: 4px solid var(--accent); border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* UI Components */
+        .glass-panel { background: var(--card); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 25px; margin-bottom: 25px; backdrop-filter: blur(10px); animation: fadeIn 0.5s ease; }
+        .nav-btn { padding: 14px; margin: 5px 0; border-radius: 12px; cursor: pointer; transition: 0.3s; color: #94a3b8; border: none; background: none; text-align: left; width: 100%; font-size: 1rem; }
+        .nav-btn.active { background: var(--accent); color: #020617; font-weight: bold; }
+        
+        .stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 25px; }
+        .stat-card { background: var(--card); border: 1px solid rgba(255,255,255,0.1); padding: 20px; border-radius: 15px; text-align: center; }
+        .stat-card h4 { margin: 0; color: #94a3b8; font-size: 0.75rem; text-transform: uppercase; }
+        .stat-card p { margin: 10px 0 0; font-size: 1.4rem; font-weight: 800; color: var(--accent); }
+
+        input, textarea { background: #0f172a; border: 1px solid #334155; color: white; padding: 12px; border-radius: 8px; width: 100%; margin-bottom: 15px; box-sizing: border-box; }
+        .btn { padding: 12px; border-radius: 8px; border: none; font-weight: 800; cursor: pointer; transition: 0.3s; width: 100%; }
+        .btn-canteen { background: var(--accent); color: #020617; }
+        .btn-sim { background: var(--primary); color: white; }
+
+        .ai-box { border-left: 4px solid var(--primary); background: rgba(139, 92, 246, 0.05); padding: 20px; border-radius: 12px; line-height: 1.6; animation: slideIn 0.4s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideIn { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: translateX(0); } }
+    </style>
+</head>
+<body>
+
+    <div id="loader">
+        <div class="spinner"></div>
+        <p style="margin-top: 20px; font-weight: 600; letter-spacing: 1px;">AI GENERATING INSIGHTS...</p>
+    </div>
+
+    <div class="sidebar">
+        <h1 style="color: var(--accent); margin: 0;">ECO-SCAN</h1>
+        <p style="color: #64748b; font-size: 0.8rem; margin-bottom: 30px;">Institutional Sustainability AI</p>
+        
+        <input type="date" id="target-date" onchange="syncUI()">
+
+        <nav>
+            <button class="nav-btn active" id="btn-entry" onclick="nav('entry')">📥 Data Entry</button>
+            <button class="nav-btn" id="btn-stats" onclick="nav('stats')">📊 Impact Analytics</button>
+            <button class="nav-btn" id="btn-sim" onclick="nav('sim')">🔮 What-If Simulator</button>
+        </nav>
+
+        <button class="btn" style="margin-top: auto; background: #ef444433; color: #ef4444; border: 1px solid #ef4444;" onclick="resetSystem()">Wipe Database</button>
+    </div>
+
+    <div class="content">
+        <!-- PAGE: DATA ENTRY -->
+        <div id="page-entry">
+            <h2 style="font-weight: 800;">Log New Emissions</h2>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <div class="glass-panel">
+                    <h3 style="color:var(--accent)">Main Canteen</h3>
+                    <input type="text" id="m-name" placeholder="Item (e.g. Chicken Biryani)">
+                    <input type="number" id="m-qty" placeholder="Quantity (Servings)">
+                    <button class="btn btn-canteen" onclick="process('canteen')">Analyze Impact</button>
+                </div>
+                <div class="glass-panel">
+                    <h3 style="color:var(--nescafe)">Nescafe Outlet</h3>
+                    <input type="file" id="n-file">
+                    <button class="btn" style="background:var(--nescafe); color:black;" onclick="process('nescafe')">Scan Receipt (OCR)</button>
+                </div>
+            </div>
+            <h3>Today's Stream</h3>
+            <div id="live-feed"></div>
+        </div>
+
+        <!-- PAGE: ANALYTICS -->
+        <div id="page-stats" style="display:none;">
+            <h2 style="font-weight: 800;">Campus Impact Metrics</h2>
+            <div class="stat-grid">
+                <div class="stat-card"><h4>Total CO2</h4><p id="s-daily">0 kg</p></div>
+                <div class="stat-card"><h4>Energy Equivalent</h4><p id="s-energy" style="color:#fbbf24">0 kWh</p></div>
+                <div class="stat-card"><h4>Bulb Hours</h4><p id="s-bulbs">0 hrs</p></div>
+                <div class="stat-card"><h4>Green Score</h4><p id="s-eff">0%</p></div>
+            </div>
+            <div class="glass-panel" style="height: 400px;">
+                <canvas id="compChart"></canvas>
+            </div>
+        </div>
+
+        <!-- PAGE: SIMULATOR -->
+        <div id="page-sim" style="display:none;">
+            <h2 style="font-weight: 800;">Future Policy Simulator</h2>
+            <div class="glass-panel">
+                <p style="color:#94a3b8">Enter a hypothetical policy change (e.g., "Switching to biodegradable cutlery" or "Monday meat-free campus").</p>
+                <textarea id="sim-input" placeholder="Type scenario here..."></textarea>
+                <button class="btn btn-sim" onclick="runSimulation()">Predict Impact</button>
+            </div>
+            <div id="sim-result" class="ai-box" style="display:none;"></div>
+        </div>
+    </div>
+
+    <script>
+        const API = "http://localhost:8000/api";
+        let masterDB = {};
+        let chart = null;
+
+        document.getElementById('target-date').valueAsDate = new Date();
+        syncUI();
+
+        function showLoader(state) { document.getElementById('loader').style.display = state ? 'flex' : 'none'; }
+
+        async function syncUI() {
+            const res = await fetch(`${API}/db`);
+            masterDB = await res.json();
+            renderLiveFeed();
+            updateStats();
+        }
+
+        function nav(page) {
+            document.querySelectorAll('[id^="page-"]').forEach(p => p.style.display = 'none');
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('page-' + page).style.display = 'block';
+            document.getElementById('btn-' + page).classList.add('active');
+            if(page === 'stats') renderChart();
+        }
+
+        async function process(source) {
+            showLoader(true);
+            const date = document.getElementById('target-date').value;
+            const fd = new FormData();
+            fd.append('date', date); fd.append('source', source);
+
+            if(source === 'canteen') {
+                fd.append('name', document.getElementById('m-name').value);
+                fd.append('qty', document.getElementById('m-qty').value);
+            } else {
+                const file = document.getElementById('n-file').files[0];
+                if(!file) { showLoader(false); return alert("Attach receipt image"); }
+                fd.append('file', file);
+            }
+
+            try {
+                await fetch(`${API}/analyze`, { method: 'POST', body: fd });
+                await syncUI();
+            } finally { showLoader(false); }
+        }
+
+        async function runSimulation() {
+            const scenario = document.getElementById('sim-input').value;
+            if(!scenario) return;
+            showLoader(true);
+            try {
+                const res = await fetch(`${API}/simulate`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ scenario })
+                });
+                const data = await res.json();
+                const box = document.getElementById('sim-result');
+                box.style.display = 'block';
+                box.innerHTML = data.prediction.replace(/\n/g, '<br>');
+            } finally { showLoader(false); }
+        }
+
+        function updateStats() {
+            let total = 0, saved = 0;
+            Object.values(masterDB).forEach(day => {
+                [...day.canteen, ...day.nescafe].forEach(i => {
+                    total += i.carbon;
+                    saved += i.saving;
+                });
+            });
+            
+            const kwh = total * 2.5; // Energy equivalent
+            document.getElementById('s-daily').innerText = total.toFixed(1) + " kg";
+            document.getElementById('s-energy').innerText = kwh.toFixed(1) + " kWh";
+            document.getElementById('s-bulbs').innerText = Math.floor(kwh/0.01).toLocaleString() + " hrs";
+            document.getElementById('s-eff').innerText = ((saved / (total + 1)) * 100).toFixed(0) + "%";
+        }
+
+        function renderLiveFeed() {
+            const date = document.getElementById('target-date').value;
+            const feed = document.getElementById('live-feed');
+            feed.innerHTML = "";
+            if(masterDB[date]) {
+                [...masterDB[date].canteen, ...masterDB[date].nescafe].reverse().forEach(i => {
+                    feed.innerHTML += `
+                        <div class="glass-panel" style="margin-bottom:10px; border-left:5px solid ${i.source==='canteen'?'#10b981':'#f59e0b'}">
+                            <div style="display:flex; justify-content:space-between">
+                                <b>${i.name}</b> <span>${i.carbon}kg CO2</span>
+                            </div>
+                            <small style="color:#94a3b8">Swap: ${i.solution}</small>
+                        </div>`;
+                });
+            }
+        }
+
+        function renderChart() {
+            let c = 0, n = 0;
+            Object.values(masterDB).forEach(day => {
+                day.canteen.forEach(i => c += i.carbon);
+                day.nescafe.forEach(i => n += i.carbon);
+            });
+            const ctx = document.getElementById('compChart').getContext('2d');
+            if(chart) chart.destroy();
+            chart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Main Canteen', 'Nescafe Outlet'],
+                    datasets: [{
+                        label: 'Total Emissions (kg)',
+                        data: [c, n],
+                        backgroundColor: ['#10b981', '#f59e0b']
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, grid: { color: '#334155' } } } }
+            });
+        }
+
+        async function resetSystem() {
+            if(confirm("Permanently delete data?")) {
+                await fetch(`${API}/clear`, { method: 'DELETE' });
+                location.reload();
+            }
+        }
+    </script>
+</body>
+</html>
+
+pycode
+
+import json, os, re, uuid
+from datetime import datetime
+from fastapi import FastAPI, UploadFile, File, Form, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
+import google.generativeai as genai
+
+app = FastAPI()
+app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
+
+# CONFIGURATION
+DB_PATH = "university_sustainability_master.json"
+# Replace with your actual Gemini API Key
+genai.configure(api_key="AIzaSyDAEZW9pT9w6WNrGW7VbOPdhajhIdRyIkQ")
+model = genai.GenerativeModel('gemini-3.1-flash-lite-preview')
+
+class SimulationRequest(BaseModel):
+    scenario: str
+
+def get_db():
+    if not os.path.exists(DB_PATH): return {}
+    with open(DB_PATH, "r") as f: 
+        try: return json.load(f)
+        except: return {}
+
+def save_db(data):
+    with open(DB_PATH, "w") as f: json.dump(data, f, indent=4)
+
+@app.post("/api/analyze")
+async def analyze_and_save(
+    date: str = Form(...), 
+    source: str = Form(...), 
+    name: str = Form(None), 
+    qty: str = Form(None), 
+    file: UploadFile = File(None)
+):
+    prompt = """Analyze the environmental impact. Return ONLY a JSON object: 
+    {"name": str, "carbon": float, "solution": str, "pkg": str, "saving": float, "efficiency": int}"""
+
+    try:
+        if file:
+            img_bytes = await file.read()
+            response = model.generate_content([f"{prompt} Source: {source} receipt.", {"mime_type": "image/jpeg", "data": img_bytes}])
+        else:
+            response = model.generate_content(f"{prompt} Item: {qty} of {name} from {source}.")
+
+        clean_text = re.search(r'\{.*\}', response.text, re.DOTALL).group()
+        item = json.loads(clean_text)
+        
+        item.update({
+            "id": str(uuid.uuid4())[:8],
+            "timestamp": datetime.now().strftime("%H:%M:%S"),
+            "source": source
+        })
+
+        db = get_db()
+        if date not in db: db[date] = {"canteen": [], "nescafe": []}
+        db[date][source].append(item)
+        save_db(db)
+        return item
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"AI Error: {str(e)}")
+
+@app.post("/api/simulate")
+async def simulate_scenario(request: SimulationRequest):
+    db = get_db()
+    total_carbon = 0
+    for date in db:
+        total_carbon += sum(item['carbon'] for item in db[date]["canteen"])
+        total_carbon += sum(item['carbon'] for item in db[date]["nescafe"])
+
+    prompt = f"""
+    Current Campus Carbon: {total_carbon}kg. 
+    Analyze this policy change: "{request.scenario}"
+    Provide: 1. % Carbon Reduction, 2. UN SDG Impact, 3. Difficulty (1-10), 4. Real-world university example.
+    Keep it professional and concise with Markdown formatting.
+    """
+    try:
+        response = model.generate_content(prompt)
+        return {"prediction": response.text}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail="Simulation Failed")
+
+@app.get("/api/db")
+async def fetch_db(): return get_db()
+
+@app.delete("/api/clear")
+async def clear(): 
+    save_db({})
+    return {"status": "Wiped"}
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8000)

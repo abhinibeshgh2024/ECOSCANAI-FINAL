@@ -1,0 +1,303 @@
+pycode
+
+import json, os, re, uuid
+from datetime import datetime
+from fastapi import FastAPI, UploadFile, File, Form, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
+import google.generativeai as genai
+
+app = FastAPI()
+app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
+
+DB_PATH = "university_sustainability_master.json"
+# Use your Gemini API Key
+genai.configure(api_key="AIzaSyDAEZW9pT9w6WNrGW7VbOPdhajhIdRyIkQ")
+model = genai.GenerativeModel('gemini-3.1-flash-lite-preview')
+
+def get_db():
+    if not os.path.exists(DB_PATH): return {}
+    with open(DB_PATH, "r") as f: return json.load(f)
+
+def save_db(data):
+    with open(DB_PATH, "w") as f: json.dump(data, f, indent=4)
+
+@app.post("/api/analyze")
+async def analyze_and_save(
+    date: str = Form(...), 
+    source: str = Form(...), 
+    name: str = Form(None), 
+    qty: str = Form(None), 
+    file: UploadFile = File(None)
+):
+    prompt = """Return ONLY a JSON object: {"name": str, "carbon": float, "solution": str, "pkg": str, "saving": float, "efficiency": int} 
+    Analyze the carbon footprint for: """
+    
+    try:
+        if file:
+            img_bytes = await file.read()
+            response = model.generate_content([f"{prompt} this receipt image.", {"mime_type": "image/jpeg", "data": img_bytes}])
+        else:
+            response = model.generate_content(f"{prompt} {qty} servings of {name}.")
+
+        # Cleaning response
+        raw_json = re.search(r'\{.*\}', response.text, re.DOTALL).group()
+        item = json.loads(raw_json)
+        item.update({"id": str(uuid.uuid4())[:5], "source": source})
+
+        db = get_db()
+        if date not in db: db[date] = {"canteen": [], "nescafe": []}
+        db[date][source].append(item)
+        save_db(db)
+        return item
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/api/strategy")
+async def get_ai_strategy():
+    db = get_db()
+    # Flatten all data for analysis
+    all_items = []
+    for date in db:
+        all_items.extend(db[date]["canteen"])
+        all_items.extend(db[date]["nescafe"])
+    
+    if not all_items:
+        return {"strategy": "No data available yet. Start logging items to see AI insights."}
+
+    summary = f"The university has logged {len(all_items)} items. Total carbon footprint recorded. Some items include {all_items[0]['name'] if all_items else ''}."
+    
+    prompt = f"""
+    Act as a Sustainability Consultant. Based on this university food data: {summary}.
+    1. Compare performance against UN SDG 12 (Responsible Consumption) and SDG 13 (Climate Action).
+    2. Mention how top global institutes (like MIT or Oxford) reduce canteen waste.
+    3. Provide 3 high-impact institutional policy changes.
+    4. Estimate the percentage achieved towards 'Net Zero Campus' based on this data.
+    Format the response in clear, concise bullet points.
+    """
+    
+    try:
+        response = model.generate_content(prompt)
+        return {"strategy": response.text}
+    except Exception as e:
+        return {"strategy": "AI Strategy failed to generate."}
+
+@app.get("/api/db")
+async def fetch_db(): return get_db()
+
+@app.delete("/api/clear")
+async def clear(): save_db({})
+
+html file
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eco-Scan AI | Sustainable University Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root { --accent: #10b981; --nescafe: #f59e0b; --bg: #020617; --card: rgba(255,255,255,0.04); }
+        body { margin: 0; font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: white; display: flex; height: 100vh; overflow: hidden; }
+        
+        /* Sidebar & Layout */
+        .sidebar { width: 300px; background: rgba(15, 23, 42, 0.9); border-right: 1px solid rgba(255,255,255,0.1); padding: 30px; display: flex; flex-direction: column; backdrop-filter: blur(20px); z-index: 100; }
+        .content { flex: 1; padding: 40px; overflow-y: auto; background: radial-gradient(circle at top right, #0f172a, #020617); position: relative; }
+
+        /* Loader Animation */
+        #loader { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(2, 6, 23, 0.8); backdrop-filter: blur(5px); z-index: 1000; flex-direction: column; justify-content: center; align-items: center; }
+        .spinner { width: 50px; height: 50px; border: 5px solid var(--card); border-top: 5px solid var(--accent); border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* Glassmorphism */
+        .glass-panel { background: var(--card); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 25px; margin-bottom: 25px; backdrop-filter: blur(10px); }
+        .nav-btn { padding: 14px; margin: 5px 0; border-radius: 12px; cursor: pointer; transition: 0.3s; color: #94a3b8; border: none; background: none; text-align: left; width: 100%; font-size: 1rem; }
+        .nav-btn.active { background: var(--accent); color: #020617; font-weight: bold; }
+
+        /* Stats & Cards */
+        .stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 25px; }
+        .stat-card { background: var(--card); border: 1px solid rgba(255,255,255,0.1); padding: 20px; border-radius: 15px; text-align: center; }
+        .stat-card p { margin: 10px 0 0; font-size: 1.6rem; font-weight: 800; color: var(--accent); }
+
+        input, select { background: #0f172a; border: 1px solid #334155; color: white; padding: 12px; border-radius: 8px; width: 100%; margin-bottom: 15px; box-sizing: border-box; }
+        .btn { padding: 12px; border-radius: 8px; border: none; font-weight: 800; cursor: pointer; transition: 0.3s; width: 100%; }
+        .btn-canteen { background: var(--accent); color: black; }
+        .btn-ai { background: #8b5cf6; color: white; margin-top: 10px; }
+
+        .ai-insight-box { border-left: 4px solid #8b5cf6; background: rgba(139, 92, 246, 0.05); padding: 20px; border-radius: 12px; line-height: 1.6; }
+        .item-card { border-left: 4px solid var(--accent); background: rgba(255,255,255,0.02); padding: 15px; border-radius: 12px; margin-bottom: 10px; animation: slideUp 0.4s ease-out; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+    <div id="loader"><div class="spinner"></div><p>AI analyzing environmental impact...</p></div>
+
+    <div class="sidebar">
+        <h2 style="color: var(--accent);">ECO-SCAN AI</h2>
+        <input type="date" id="target-date" onchange="syncUI()">
+
+        <div style="margin-top: 20px;">
+            <button class="nav-btn active" id="btn-entry" onclick="nav('entry')">📥 Entry Feed</button>
+            <button class="nav-btn" id="btn-stats" onclick="nav('stats')">📊 Analytics</button>
+            <button class="nav-btn" id="btn-ai" onclick="nav('ai')">✨ AI Strategy</button>
+        </div>
+        <button class="btn" style="margin-top: auto; background: #ef4444;" onclick="resetSystem()">Wipe DB</button>
+    </div>
+
+    <div class="content">
+        <!-- PAGE: ENTRY -->
+        <div id="page-entry">
+            <h1>Log Emissions</h1>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <div class="glass-panel">
+                    <h3 style="color:var(--accent)">Main Canteen</h3>
+                    <input type="text" id="m-name" placeholder="Item Name">
+                    <input type="number" id="m-qty" placeholder="Quantity">
+                    <button class="btn btn-canteen" onclick="process('canteen')">Analyze Item</button>
+                </div>
+                <div class="glass-panel">
+                    <h3 style="color:var(--nescafe)">Nescafe (OCR)</h3>
+                    <input type="file" id="n-file">
+                    <button class="btn btn-nescafe" style="background:var(--nescafe)" onclick="process('nescafe')">Process Receipt</button>
+                </div>
+            </div>
+            <h3>Live Processing Stream</h3>
+            <div id="live-feed"></div>
+        </div>
+
+        <!-- PAGE: STATS -->
+        <div id="page-stats" style="display:none;">
+            <h1>Campus Performance</h1>
+            <div class="stat-grid">
+                <div class="stat-card"><h4>Daily</h4><p id="s-daily">0</p></div>
+                <div class="stat-card"><h4>Yearly</h4><p id="s-yearly">0</p></div>
+                <div class="stat-card"><h4>Efficiency</h4><p id="s-eff">0%</p></div>
+                <div class="stat-card"><h4>UN Goal Gap</h4><p id="s-gap" style="color:#ef4444">N/A</p></div>
+            </div>
+            <div class="glass-panel" style="height: 400px;"><canvas id="compChart"></canvas></div>
+        </div>
+
+        <!-- PAGE: AI STRATEGY -->
+        <div id="page-ai" style="display:none;">
+            <h1>Institutional AI Strategy</h1>
+            <div class="glass-panel">
+                <button class="btn btn-ai" onclick="generateGlobalStrategy()">Generate UN-Aligned Roadmap</button>
+                <div id="ai-strategy-content" class="ai-insight-box" style="margin-top:20px;">
+                    Click the button above to generate a sustainability report based on your data.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API = "http://localhost:8000/api";
+        let masterDB = {};
+        let chart = null;
+
+        document.getElementById('target-date').valueAsDate = new Date();
+        syncUI();
+
+        function showLoader(show) { document.getElementById('loader').style.display = show ? 'flex' : 'none'; }
+
+        async function syncUI() {
+            const res = await fetch(`${API}/db`);
+            masterDB = await res.json();
+            renderLiveFeed();
+            updateCumulativeStats();
+        }
+
+        function nav(page) {
+            document.querySelectorAll('[id^="page-"]').forEach(p => p.style.display = 'none');
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('page-' + page).style.display = 'block';
+            document.getElementById('btn-' + page).classList.add('active');
+            if(page === 'stats') renderChart();
+        }
+
+        async function process(source) {
+            showLoader(true);
+            const date = document.getElementById('target-date').value;
+            const fd = new FormData();
+            fd.append('date', date); fd.append('source', source);
+
+            if(source === 'canteen') {
+                fd.append('name', document.getElementById('m-name').value);
+                fd.append('qty', document.getElementById('m-qty').value);
+            } else {
+                const file = document.getElementById('n-file').files[0];
+                if(!file) { showLoader(false); return alert("Select receipt"); }
+                fd.append('file', file);
+            }
+
+            try {
+                await fetch(`${API}/analyze`, { method: 'POST', body: fd });
+                syncUI();
+            } finally { showLoader(false); }
+        }
+
+        async function generateGlobalStrategy() {
+            showLoader(true);
+            try {
+                const res = await fetch(`${API}/strategy`);
+                const data = await res.json();
+                document.getElementById('ai-strategy-content').innerHTML = `
+                    <h2 style="color:var(--accent)">UN SDG Alignment Report</h2>
+                    <p>${data.strategy.replace(/\n/g, '<br>')}</p>
+                `;
+            } catch (e) { alert("Strategy generation failed."); }
+            finally { showLoader(false); }
+        }
+
+        function renderLiveFeed() {
+            const date = document.getElementById('target-date').value;
+            const feed = document.getElementById('live-feed');
+            feed.innerHTML = "";
+            if(masterDB[date]) {
+                [...masterDB[date].canteen, ...masterDB[date].nescafe].reverse().forEach(item => {
+                    feed.innerHTML += `
+                        <div class="item-card ${item.source === 'nescafe' ? 'nescafe-border' : ''}">
+                            <div style="display:flex; justify-content:space-between;">
+                                <strong>${item.name}</strong>
+                                <span style="color:var(--accent)">${item.carbon} kg CO2e</span>
+                            </div>
+                            <div style="font-size:0.85rem; margin-top:8px; color:#94a3b8;">
+                                Swap: ${item.solution} | Score: ${item.efficiency}%
+                            </div>
+                        </div>`;
+                });
+            }
+        }
+
+        function updateCumulativeStats() {
+            let total = 0, saved = 0;
+            Object.values(masterDB).forEach(day => {
+                [...day.canteen, ...day.nescafe].forEach(i => { total += i.carbon; saved += i.saving; });
+            });
+            document.getElementById('s-daily').innerText = total.toFixed(1) + "kg";
+            document.getElementById('s-eff').innerText = ((saved / (total + 1)) * 100).toFixed(0) + "%";
+            document.getElementById('s-gap').innerText = total > 50 ? "Over Target" : "On Track";
+        }
+
+        function renderChart() {
+            let cant = 0, nesc = 0;
+            Object.values(masterDB).forEach(day => {
+                day.canteen.forEach(i => cant += i.carbon);
+                day.nescafe.forEach(i => nesc += i.carbon);
+            });
+            const ctx = document.getElementById('compChart').getContext('2d');
+            if(chart) chart.destroy();
+            chart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Canteen', 'Nescafe'],
+                    datasets: [{ data: [cant, nesc], backgroundColor: ['#10b981', '#f59e0b'], borderWeight: 0 }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { color: 'white' } } } }
+            });
+        }
+
+        async function resetSystem() { if(confirm("Clear all data?")) { await fetch(`${API}/clear`, { method: 'DELETE' }); syncUI(); } }
+    </script>
+</body>
+</html>
