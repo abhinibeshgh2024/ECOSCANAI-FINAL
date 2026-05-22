@@ -206,13 +206,13 @@
                 "carbon": 1.3,
                 "price": 47,
                 "efficiency": 80,
-                "swap": "Reusable coffe cup/metal straws",
+                "swap": "Reusable coffee cup/metal straws",
                 "impact": "New item detected via OCR"
             },
             {
                 "name": "Almond Scone",
                 "carbon": 0.9,
-                "price": 0.0,
+                "price": 40,
                 "efficiency": 80,
                 "swap": "Pending manual update",
                 "impact": "New item detected via OCR"
@@ -220,7 +220,7 @@
             {
                 "name": "16oz Bottle Water",
                 "carbon": 0.2,
-                "price": 0.0,
+                "price": 20,
                 "efficiency": 80,
                 "swap": "Pending manual update",
                 "impact": "New item detected via OCR"
@@ -228,47 +228,47 @@
             {
                 "name": "Payasam",
                 "carbon": 0.6,
-                "price": 100.0,
+                "price": 100,
                 "efficiency": 85,
                 "swap": "No effective swap needed",
-                "impact": ""
+                "impact": "Traditional item optimized"
             },
             {
                 "name": "JhalMuri",
-                "carbon": 0.0,
-                "price": 0.0,
+                "carbon": 0.1,
+                "price": 25,
                 "efficiency": 100,
                 "swap": "No Swap",
-                "impact": ""
+                "impact": "Naturally low carbon footprint"
             },
             {
                 "name": "Curd Rice",
                 "carbon": 0.3,
-                "price": 0.0,
+                "price": 50,
                 "efficiency": 100,
-                "swap": "Use Millet Rice intead of regular ones",
-                "impact": ""
+                "swap": "Use Millet Rice instead of regular ones",
+                "impact": "Millets optimize water resources"
             },
             {
                 "name": "Fish Burger",
-                "carbon": 0.0,
-                "price": 0.0,
+                "carbon": 1.8,
+                "price": 120,
                 "efficiency": 80,
                 "swap": "Pending manual update",
                 "impact": "New item detected via OCR"
             },
             {
                 "name": "Fish & Chips",
-                "carbon": 0.0,
-                "price": 0.0,
+                "carbon": 2.0,
+                "price": 150,
                 "efficiency": 80,
                 "swap": "Pending manual update",
                 "impact": "New item detected via OCR"
             },
             {
                 "name": "Soft Drink",
-                "carbon": 0.0,
-                "price": 0.0,
+                "carbon": 0.4,
+                "price": 30,
                 "efficiency": 80,
                 "swap": "Pending manual update",
                 "impact": "New item detected via OCR"
@@ -437,7 +437,7 @@
             },
             {
                 "name": "Blueberry Muffin",
-                "carbon": 1000.5,
+                "carbon": 0.6,
                 "price": 55,
                 "efficiency": 80,
                 "swap": "Seasonal Fruit Tart",
@@ -477,24 +477,24 @@
             },
             {
                 "name": "Fish Burger",
-                "carbon": 0.0,
-                "price": 0.0,
+                "carbon": 1.8,
+                "price": 110,
                 "efficiency": 80,
                 "swap": "Pending manual update",
                 "impact": "New item detected via OCR"
             },
             {
                 "name": "Fish & Chips",
-                "carbon": 0.0,
-                "price": 0.0,
+                "carbon": 2.0,
+                "price": 140,
                 "efficiency": 80,
                 "swap": "Pending manual update",
                 "impact": "New item detected via OCR"
             },
             {
                 "name": "Soft Drink",
-                "carbon": 0.0,
-                "price": 0.0,
+                "carbon": 0.4,
+                "price": 30,
                 "efficiency": 80,
                 "swap": "Pending manual update",
                 "impact": "New item detected via OCR"
@@ -502,10 +502,10 @@
             {
                 "name": "American Waffles",
                 "carbon": 1.2,
-                "price": 0.0,
+                "price": 90,
                 "efficiency": 100,
-                "swap": "White waffle",
-                "impact": ""
+                "swap": "Whole Wheat Waffle",
+                "impact": "Lower processing processing carbon footprint"
             }
         ]
     }
