@@ -4,6 +4,7 @@ from datetime import datetime
 from typing import Optional
 from fastapi import FastAPI, Form, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import HTMLResponse  # Added for live web hosting
 from pydantic import BaseModel
 
 app = FastAPI(title="Eco-Scan AI Engine")
@@ -53,6 +54,23 @@ class PolicyPayload(BaseModel):
     scenario: str
     stats: str
 
+# 🌟 CRITICAL EDIT: Serve the Frontend Directly to the Web Live!
+@app.get("/", response_class=HTMLResponse)
+def serve_live_website():
+    html_path = "index.html"
+    if os.path.exists(html_path):
+        with open(html_path, "r", encoding="utf-8") as f:
+            return f.read()
+    return """
+    <html>
+        <body style="background:#0f172a; color:white; font-family:sans-serif; text-align:center; padding-top:100px;">
+            <h1>🌍 Eco-Scan Backend is Live!</h1>
+            <p style="color:#94a3b8;">But index.html was not found in your root repository folder.</p>
+            <p>Make sure index.html is placed right next to app.py in GitHub!</p>
+        </body>
+    </html>
+    """
+
 @app.get("/api/master")
 def get_master_schema():
     return load_json(MASTER_FILE, {"items": {"canteen": [], "nescafe": []}})
@@ -93,7 +111,6 @@ async def analyze_and_log_transaction(
     target_name = name.strip() if name else ""
     carbon_weight = 0.45 
 
-    # Dynamic OCR parser mocking
     if file:
         if source == "canteen":
             target_name = "OCR Veg Thali Scanned"
@@ -107,7 +124,6 @@ async def analyze_and_log_transaction(
     source_items = master.get("items", {}).get(source, [])
     match = next((item for item in source_items if item.get("name", "").lower() == target_name.lower()), None)
 
-    # CRITICAL EDIT: If the scanned/typed item isn't in master_data.json, auto-save it!
     if not match:
         new_master_item = {
             "source": source,
@@ -122,8 +138,6 @@ async def analyze_and_log_transaction(
             master["items"][source] = []
         master["items"][source].append(new_master_item)
         save_json(MASTER_FILE, master)
-        print(f"--> Auto-Registered unknown item into Master: {target_name}")
-
     else:
         carbon_weight = match["carbon"]
 
@@ -159,4 +173,3 @@ def run_predictive_policy_engine(payload: PolicyPayload):
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run("app:app", host="0.0.0.0", port=8000, reload=True)
-    
