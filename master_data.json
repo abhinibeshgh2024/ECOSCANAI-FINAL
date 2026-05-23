@@ -272,6 +272,15 @@
                 "efficiency": 80,
                 "swap": "Pending manual update",
                 "impact": "New item detected via OCR"
+            },
+            {
+                "source": "canteen",
+                "name": "OCR Veg Thali Scanned",
+                "carbon": 1.2,
+                "price": 0.0,
+                "efficiency": 100,
+                "swap": "Plant-Based Alternative",
+                "impact": "Auto-generated baseline from diagnostic receipt scan profiles."
             }
         ],
         "nescafe": [
